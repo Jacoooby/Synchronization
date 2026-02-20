@@ -4,24 +4,44 @@ import java.util.concurrent.Semaphore;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        boolean validInput = false;
+        String task;
+
+        if (args.length < 2) {
+            System.out.println("To start a task. Enter either -A 1 or -A 2");
+            String letter = scanner.next();
+            task = scanner.next();
+
+        } else {
+            task = args[1];
+        }
 
         // switch statement to manually determine what task to run depending on what the user types.
-        switch (args[1]) {
-            case "1":
-                System.out.println("Starting Task 1: Dining Philosophers");
-                startDiningPhilosophers();
-                break;
+        while (!validInput) {
+            switch (task) {
+                case "1":
+                    System.out.println("Starting Task 1: Dining Philosophers");
+                    startDiningPhilosophers();
+                    validInput = true;
+                    break;
 
-            case "2":
-                System.out.println("Starting Task 2: Readers-Writers Problem");
-                break;
+                case "2":
+                    System.out.println("Starting Task 2: Readers-Writers Problem");
+                    startReaderWriters();
+                    validInput = true;
+                    break;
 
-            default:
-                System.out.println("Invalid argument to start a task. Try again with either -A 1 or -A 2");
+                default:
+                    System.out.println("Invalid argument to start a task. Try again with either -A 1 or -A 2");
+                    String letter = scanner.next();
+                    task = scanner.next();
+            }
         }
     }
 
-    // if the user types argument -A 1, this method will be called. Then it will start the dining philosophers problem.
+
+
+    // if the user types argument -A 1, this method will be called to start the dining philosophers problem.
     public static void startDiningPhilosophers() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the number of philosophers P: ");
@@ -54,5 +74,10 @@ public class Main {
 
 
 
-    //
+    // if the user types argument -A 2, this method will be called to start the readers-writers problem.
+    //....
+    public static void startReaderWriters() {
+        // stuff
+
+    }
 }
