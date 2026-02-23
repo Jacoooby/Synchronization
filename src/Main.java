@@ -44,16 +44,42 @@ public class Main {
     // if the user types argument -A 1, this method will be called to start the dining philosophers problem.
     public static void startDiningPhilosophers() {
         Scanner scanner = new Scanner(System.in);
+
         System.out.print("Enter the number of philosophers P: ");
         int P = scanner.nextInt();
+        while (P < 2) {
+            System.out.print("The minimum number of philosophers is 2. Please enter a valid number, P: ");
+            P = scanner.nextInt();
+        }
 
         System.out.print("Enter the number of total meals to be eaten M: ");
         int M = scanner.nextInt();
+        while (M < 1) {
+            System.out.print("The minimum number of meals is 1. Please enter a valid number, M: ");
+            M = scanner.nextInt();
+        }
 
-        // Semaphore to track when all philosophers have arrived
-        Semaphore presentCounter = new Semaphore(0);
-        // Semaphore to track when philosophers have sat down
+
+        // mutex semaphore to help track when all philosophers have arrived
+        Semaphore arrive = new Semaphore(1);
+        // semaphore to track when the last philosopher arrives so everyone can sit
         Semaphore seatedCounter = new Semaphore(0);
+        // arrival counter
+        int[] arrived = {0};
+
+
+        // mutex semaphore to protect meals left counter
+        Semaphore mealMutex = new Semaphore(1);
+        // meals left counter
+        int[] mealsLeft = {M};
+
+
+        // mutex semaphore to track exitCount
+        Semaphore exitMutex = new Semaphore(1);
+        // semaphore that opens once last philosopher is ready to leave
+        Semaphore exitBarrier = new Semaphore(0);
+        // count of how many philosophers are ready to leave
+        int[] exitCount = {0};
 
         // create array of semaphores for chopsticks
         Semaphore[] chopsticks = new Semaphore[P];
@@ -67,8 +93,17 @@ public class Main {
         Thread[] threads = new Thread[P];
         // fork a single thread for each philosopher
         for (int i = 0; i < P; i++) {
-            threads[i] = new Thread(new DiningPhilosophers(i, M, presentCounter, seatedCounter, P, chopsticks));
+            threads[i] = new Thread(new DiningPhilosophers(i, arrive, seatedCounter, arrived, mealMutex, mealsLeft, exitMutex, exitBarrier, exitCount, chopsticks, P));
             threads[i].start();
+        }
+
+        // wait for all philosopher threads
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
