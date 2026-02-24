@@ -25,7 +25,8 @@ class DiningPhilosophers implements Runnable {
     // mutex semaphore to track exitCount
     private static Semaphore exitMutex;
 
-    DiningPhilosophers(int philosopherID, Semaphore arrive, Semaphore seated, int[] arrived, Semaphore mealMutex, int[] mealsLeft, Semaphore exitMutex, Semaphore exitBarrier, int[] exitCount, Semaphore[] chopsticks, int total) {
+        DiningPhilosophers(int philosopherID, Semaphore arrive, Semaphore seated, int[] arrived, int[] mealsLeft, Semaphore exitMutex, Semaphore exitBarrier, int[] exitCount, int total) {
+        //DiningPhilosophers(int philosopherID, Semaphore arrive, Semaphore seated, int[] arrived, Semaphore mealMutex, int[] mealsLeft, Semaphore exitMutex, Semaphore exitBarrier, int[] exitCount, Semaphore[] chopsticks, int total) {
         this.philosopherID = philosopherID;
         DiningPhilosophers.arrive = arrive;
         DiningPhilosophers.seatedCounter = seated;
@@ -65,7 +66,24 @@ class DiningPhilosophers implements Runnable {
             System.out.println("---Philosopher " + philosopherID + " sits down.");
 
             // Step 10: this loop handles chopstick, eating, and thinking logic. All these steps within this loop will keep repeating until all meals have been eaten.
-            while (true) {
+            //while (true) {
+            while (mealsLeft[philosopherID] > 0) {
+                mealsLeft[philosopherID]--;
+
+                int randomCyles = 3 + (int) (Math.random() * 4);
+                for (int i = 0; i < randomCyles; i++) {
+                    Thread.sleep(100);
+                }
+
+                int thinkCycles = 3 + (int) (Math.random() * 4);
+                for (int i = 0; i < thinkCycles; i++) {
+                    Thread.sleep(100);
+                }
+            }
+            System.out.println("---------Philosopher " + philosopherID + " finished all their meals and is ready to leave.");
+
+
+                /*
                 // check if all meals have been eaten before trying to grab chopsticks
                 mealMutex.acquire();
                 if (mealsLeft[0] <= 0) {
@@ -77,13 +95,20 @@ class DiningPhilosophers implements Runnable {
                 // prevent deadlock from happening by having an even ID philosophers picking up left chopstick first
                 // and an odd ID philosophers picking up right chopstick first.
                 int leftChopstick, rightChopstick;
-                if (philosopherID % 2 == 0) {
-                    leftChopstick = philosopherID;
-                    rightChopstick = (philosopherID + 1) % totalPhilosophers;
+
+                if (totalPhilosophers == 1) {
+                    leftChopstick = 0;
+                    rightChopstick = 1;
                 } else {
-                    leftChopstick = (philosopherID + 1) % totalPhilosophers;
-                    rightChopstick = philosopherID;
+                    if (philosopherID % 2 == 0) {
+                        leftChopstick = philosopherID;
+                        rightChopstick = (philosopherID + 1) % totalPhilosophers;
+                    } else {
+                        leftChopstick = (philosopherID + 1) % totalPhilosophers;
+                        rightChopstick = philosopherID;
+                    }
                 }
+
 
                 // Step Two/Three: try to pick up left and right chopsticks
                 chopsticks[leftChopstick].acquire();
@@ -96,6 +121,9 @@ class DiningPhilosophers implements Runnable {
                     break;
                 }
                 mealMutex.release();
+
+                // extras needed for task 1
+                //Thread.yield();
 
                 System.out.println("---Philosopher " + philosopherID + "'s left chopstick is available");
                 // now check if the right is available
@@ -146,6 +174,7 @@ class DiningPhilosophers implements Runnable {
 
             // Step 11: a philosopher finally breaks out of the loop because no meals are left
             System.out.println("---------No meals left for Philosopher " + philosopherID + " they are ready to leave.");
+                 */
 
             // Wait for all philosophers to finish eating before they can all exit together
             exitMutex.acquire();

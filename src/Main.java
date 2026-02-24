@@ -47,7 +47,10 @@ public class Main {
 
         System.out.print("Enter the number of philosophers P: ");
         int P = scanner.nextInt();
-        while (P < 2) {
+
+
+        while (P < 1) { // needed for task 1 report
+        //while (P < 2) {
             System.out.print("The minimum number of philosophers is 2. Please enter a valid number, P: ");
             P = scanner.nextInt();
         }
@@ -67,11 +70,22 @@ public class Main {
         // arrival counter
         int[] arrived = {0};
 
-
+        /*
         // mutex semaphore to protect meals left counter
         Semaphore mealMutex = new Semaphore(1);
         // meals left counter
         int[] mealsLeft = {M};
+
+         */
+
+        // mutex semaphore to protect meals left counter
+        Semaphore mealMutex = null;
+        // meals left counter
+        int[] mealsLeft = new int[P];
+        for (int i = 0; i < P; i++) {
+            // each philosopher has their own meals left counter so if you type m = 4 it will work for the dedicated meals version
+            mealsLeft[i] = M;
+        }
 
 
         // mutex semaphore to track exitCount
@@ -81,6 +95,7 @@ public class Main {
         // count of how many philosophers are ready to leave
         int[] exitCount = {0};
 
+        /*
         // create array of semaphores for chopsticks
         Semaphore[] chopsticks = new Semaphore[P];
         for (int i = 0; i < P; i++) {
@@ -88,12 +103,31 @@ public class Main {
             chopsticks[i] = new Semaphore(1);
         }
 
+         */
+
+        // extra needed for task 1 report
+        Semaphore[] chopsticks = null;
+        /*
+        Semaphore[] chopsticks = new Semaphore[P + 1];
+        for (int i = 0; i < P + 1; i++) {
+            // each index is a chopstick so its semaphore value is initialized to 1
+            chopsticks[i] = new Semaphore(1);
+        }
+
+         */
+
+
+
 
         // array to store threads for philosophers
         Thread[] threads = new Thread[P];
+
+        // extras needed for task 1
+        long start_time = System.nanoTime();
         // fork a single thread for each philosopher
         for (int i = 0; i < P; i++) {
-            threads[i] = new Thread(new DiningPhilosophers(i, arrive, seatedCounter, arrived, mealMutex, mealsLeft, exitMutex, exitBarrier, exitCount, chopsticks, P));
+            //threads[i] = new Thread(new DiningPhilosophers(i, arrive, seatedCounter, arrived, mealMutex, mealsLeft, exitMutex, exitBarrier, exitCount, chopsticks, P));
+            threads[i] = new Thread(new DiningPhilosophers(i, arrive, seatedCounter, arrived, mealsLeft, exitMutex, exitBarrier, exitCount, P));
             threads[i].start();
         }
 
@@ -105,6 +139,11 @@ public class Main {
                 Thread.currentThread().interrupt();
             }
         }
+
+        // extras needed for task 1
+        long end_time = System.nanoTime();
+        System.out.printf("Runtime in milliseconds = ");
+        System.out.println((end_time - start_time) / 1000000.0);
     }
 
 
