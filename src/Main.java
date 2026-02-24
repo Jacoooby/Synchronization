@@ -9,38 +9,39 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean validInput = false;
         String task;
 
-        if (args.length < 2) {
+        if (args.length != 2) {
             System.out.println("To start a task. Enter either -A 1 or -A 2");
-            String letter = scanner.next();
-            task = scanner.next();
-
-        } else {
-            task = args[1];
+            return;
         }
 
+        // check args at index 0 to see if they started with -A
+        if (!args[0].equals("-A")) {
+            System.out.println("Invalid argument to start a task. Try again with either -A 1 or -A 2");
+            return;
+        }
+
+        task = args[1];
+
+        // check args at index 1 to see if user typed 1 or 2
+        if (!task.equals("1") && !task.equals("2")) {
+            System.out.println("Invalid argument to start a task. Try again with either -A 1 or -A 2");
+            return;
+        }
+
+
         // switch statement to manually determine what task to run depending on what the user types.
-        while (!validInput) {
-            switch (task) {
-                case "1":
-                    System.out.println("Starting Task 1: Dining Philosophers");
-                    startDiningPhilosophers();
-                    validInput = true;
-                    break;
+        switch (task) {
+            case "1":
+                System.out.println("Starting Task 1: Dining Philosophers");
+                startDiningPhilosophers();
+                break;
 
-                case "2":
-                    System.out.println("Starting Task 2: Readers-Writers Problem");
-                    startReaderWriters();
-                    validInput = true;
-                    break;
-
-                default:
-                    System.out.println("Invalid argument to start a task. Try again with either -A 1 or -A 2");
-                    String letter = scanner.next();
-                    task = scanner.next();
-            }
+            case "2":
+                System.out.println("Starting Task 2: Readers-Writers Problem");
+                startReaderWriters();
+                break;
         }
     }
 
