@@ -6,7 +6,7 @@ public class ReaderWriters implements Runnable
     static Semaphore Wait_Thread = new Semaphore(0);
     static Semaphore sFile = new Semaphore( Main.N );
     static Semaphore bFile = new Semaphore(1, true);
-    int tester = 10000000;
+    int tester = 100000;
 
     @Override
     public void run()
