@@ -116,7 +116,6 @@ public class Main {
 
 
     // if the user types argument -A 2, this method will be called to start the readers-writers problem.
-    //....
     public static void startReaderWriters()
     {
         {
